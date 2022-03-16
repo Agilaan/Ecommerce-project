@@ -1,0 +1,147 @@
+@charset "ISO-8859-1";
+body
+{
+	background: url("bgi.jpg") center center fixed;
+	  background-size:cover;
+	background-repeat: no-repeat;
+
+}
+
+nav ul li a
+{
+	float:left; 
+	display:block;
+	color: black;
+	padding:0px 20px;
+	text-decoration:none;
+	font-size:20px;
+	line-height:60px;
+	
+}
+nav ul ul a
+{
+	line-height:30px;
+}
+
+nav ul li
+{
+	list-style:none;
+	position:relative;
+	display:inline-block;
+	
+}
+
+nav ul li a:hover 
+{
+	background-color:#ddd;
+	color:black;
+	
+}
+nav ul ul
+{
+	position:absolute;
+	top:60px;
+	display:none;
+}
+nav ul li:hover > ul
+{
+	display:block;
+}
+
+table
+{
+	border:1px solid #ccc;
+    width:100%;
+	table-layout:fixed;
+}
+table caption
+{
+	font-size:1.5em;
+	margin: .5em 0 .75em;
+}
+table tr
+{
+	border:1px solid #ddd;
+	padding: .35em;
+}
+table th,
+table td
+{
+	padding:.625em;
+	text-align: center;
+}
+
+.pop-up
+{
+	position: fixed;
+	top: 50%;
+	left:50%;
+	transform: translate(-50%,-50%);
+	border:1px solid black;
+	width:500px;
+}
+button {
+  background-color: #4CAF50; 
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  cursor:pointer;
+  display: inline-block;
+  font-size: 16px;
+}
+button:hover
+{
+	background-color:rgba(0,0,0,0.2);
+}
+
+.b1
+{
+	height:400px;
+	width:600px;
+	float:left;
+	border:3px solid #fff;
+	background-color:#C0C0C0;
+	color:black;
+	text-align:center;
+	margin:10px 10px 10px 10px;
+	overflow:scroll;
+	
+}
+.b2
+{
+	height:400px;
+	width:600px;
+	float:left;
+	border:3px solid #fff;
+	background-color:#C0C0C0;
+	color:black;
+	text-align:center;
+	margin:10px 10px 10px 10px;
+	overflow:scroll;
+	
+}
+.b3
+{
+	height:400px;
+	width:600px;
+	float:left;
+	border:3px solid #fff;
+	background-color:#C0C0C0;
+	color:black;
+	text-align:center;
+	margin:10px 10px 10px 10px;
+	overflow:scroll;
+}
+.b4
+{
+	height:400px;
+	width:600px;
+	float:left;
+	border:3px solid #ffffff;
+	background-color:#C0C0C0;
+	color:black;
+	text-align:center;
+    margin:10px 10px 10px 10px;
+    overflow:scroll;
+}
