@@ -366,40 +366,118 @@ public class AdminWelcomePage extends HttpServlet {
 			try
 			{
 				con = mConnection.getAvailableConnection();
+//				JSONArray ja1=new JSONArray();
+//				JSONObject jo=new JSONObject();
+//				SelectQuery query1 = new SelectQueryImpl(new Table("OrderDetails"));
+//				query1.addSelectColumn(Column.getColumn("OrderDetails",  "*"));
+//				query1.addSelectColumn(Column.getColumn("Products",  "PRODUCT_NAME"));
+//				query1.addSelectColumn(Column.getColumn("LoginUser",  "USER_NAME"));
+//				Criteria c2 = new Criteria(new Column("OrderDetails", "RETURN_PRODUCT"),0, QueryConstants.EQUAL); 
+//				query1.setCriteria(c2);
+//				Join join = new Join("OrderDetails", "Products", new String[]{"PRODUCT_ID"}, new String[]{"PRODUCT_ID"}, Join.INNER_JOIN);
+//	            query1.addJoin(join);
+//	            Join join1 = new Join("OrderDetails", "LoginUser", new String[]{"USER_ID"}, new String[]{"USER_ID"}, Join.INNER_JOIN);
+//	            query1.addJoin(join1);
+//				data1 = api.executeQuery(query1, con);
+//				
+//				while(data1.next())
+//				{
+//					
+//					total=total+(data1.getInt("PRICE")*data1.getInt("QUANTITY"));
+//					JSONObject jo1=new JSONObject();
+//					jo1.put("order_id", data1.getInt("ORDER_ID"));
+//					jo1.put("user_name", data1.getValue("USER_NAME"));
+//					jo1.put("product_name", data1.getValue("PRODUCT_NAME"));
+//					jo1.put("price",data1.getInt("PRICE"));
+//					jo1.put("quantity",data1.getInt("QUANTITY"));
+//					jo1.put("date", data1.getAsDate("ORDER_DATE").toString());
+//					jo1.put("total", data1.getInt("PRICE")*data1.getInt("QUANTITY"));
+//					ja1.add(jo1);
+//				}
+//				jo.put("details", ja1);
+//				jo.put("total", total);
+//				//response.getWriter().print(json.toString());
+//				response.getWriter().print(jo.toString());
 				JSONArray ja1=new JSONArray();
 				JSONObject jo=new JSONObject();
-				SelectQuery query1 = new SelectQueryImpl(new Table("OrderDetails"));
-				query1.addSelectColumn(Column.getColumn("OrderDetails",  "*"));
-				query1.addSelectColumn(Column.getColumn("Products",  "PRODUCT_NAME"));
+				SelectQuery query1 = new SelectQueryImpl(new Table("PurchasedDetails"));
+				query1.addSelectColumn(Column.getColumn("PurchasedDetails",  "*"));
 				query1.addSelectColumn(Column.getColumn("LoginUser",  "USER_NAME"));
-				Criteria c2 = new Criteria(new Column("OrderDetails", "RETURN_PRODUCT"),0, QueryConstants.EQUAL); 
-				query1.setCriteria(c2);
-				Join join = new Join("OrderDetails", "Products", new String[]{"PRODUCT_ID"}, new String[]{"PRODUCT_ID"}, Join.INNER_JOIN);
+				query1.addSelectColumn(Column.getColumn("OrderDetails",  "PURCHASE_ID"));
+				Column coll = Column.createOperation(Operation.operationType.MULTIPLY, Column.getColumn("OrderDetails", "PRICE"), Column.getColumn("OrderDetails", "QUANTITY"));
+				coll.setColumnAlias("TOTAL");
+				Column tot_col= coll.summation();
+				tot_col.setColumnAlias("TOT_COUNT");
+				query1.addSelectColumn(tot_col);
+				query1.addSelectColumn(coll);
+				Join join = new Join("PurchasedDetails", "LoginUser", new String[]{"USER_ID"}, new String[]{"USER_ID"}, Join.INNER_JOIN);
 	            query1.addJoin(join);
-	            Join join1 = new Join("OrderDetails", "LoginUser", new String[]{"USER_ID"}, new String[]{"USER_ID"}, Join.INNER_JOIN);
+	            Join join1 = new Join("PurchasedDetails", "OrderDetails", new String[]{"PURCHASE_ID"}, new String[]{"PURCHASE_ID"}, Join.INNER_JOIN);
 	            query1.addJoin(join1);
-				data1 = api.executeQuery(query1, con);
-				
-				while(data1.next())
-				{
-					total=total+(data1.getInt("PRICE")*data1.getInt("QUANTITY"));
-					JSONObject jo1=new JSONObject();
-					jo1.put("order_id", data1.getInt("ORDER_ID"));
+	            Criteria cReturn = new Criteria(new Column("OrderDetails", "RETURN_PRODUCT"),0, QueryConstants.EQUAL); 
+	            query1.setCriteria(cReturn);
+	            List groupList = new ArrayList(); 
+	            groupList.add(new Column("PurchasedDetails","PURCHASE_ID"));
+	            groupList.add(new Column("PurchasedDetails","PURCHASED_DATE"));
+	            groupList.add(new Column("PurchasedDetails","USER_ID"));
+	            groupList.add(new Column("OrderDetails","PURCHASE_ID"));
+	            groupList.add(new Column("LoginUser","USER_NAME")); 
+	            GroupByClause gr = new GroupByClause(groupList); 
+	            query1.setGroupByClause(gr);
+	            data1 = api.executeQuery(query1, con);
+	            while(data1.next()) {
+	            	JSONObject jo1=new JSONObject();
+	            	jo1.put("purchase_id", data1.getInt("PURCHASE_ID"));
 					jo1.put("user_name", data1.getValue("USER_NAME"));
-					jo1.put("product_name", data1.getValue("PRODUCT_NAME"));
-					jo1.put("price",data1.getInt("PRICE"));
-					jo1.put("quantity",data1.getInt("QUANTITY"));
-					jo1.put("date", data1.getAsDate("ORDER_DATE").toString());
-					jo1.put("total", data1.getInt("PRICE")*data1.getInt("QUANTITY"));
-					ja1.add(jo1);
-					
-				}
-				jo.put("details", ja1);
-				jo.put("total", total);
-				response.getWriter().print(jo.toString());
+     				jo1.put("date", data1.getAsDate("PURCHASED_DATE").toString());
+     				jo1.put("total", data1.getValue("TOT_COUNT"));
+	            	ja1.add(jo1);
+	            }
+	            jo.put("details",ja1);
+	            response.setContentType("application/json");
+	            response.getWriter().print(jo);
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
+		}
+		else if(func.equals("getPurticularPurchasedProduct")) {
+			DataSet data1 = null;
+			String purchase_id=request.getParameter("id");
+			try {
+			con = mConnection.getAvailableConnection();
+			JSONArray ja1=new JSONArray();
+			JSONObject jo=new JSONObject();
+			SelectQuery query1 = new SelectQueryImpl(new Table("OrderDetails"));
+			query1.addSelectColumn(Column.getColumn("OrderDetails",  "*"));
+			query1.addSelectColumn(Column.getColumn("Products",  "PRODUCT_NAME"));
+			query1.addSelectColumn(Column.getColumn("LoginUser",  "USER_NAME"));
+			Criteria c2 = new Criteria(new Column("OrderDetails", "RETURN_PRODUCT"),0, QueryConstants.EQUAL); 
+			Criteria c3 = new Criteria(new Column("OrderDetails", "PURCHASE_ID"),purchase_id, QueryConstants.EQUAL); 
+			Criteria c=c2.and(c3);
+			query1.setCriteria(c);
+			Join join = new Join("OrderDetails", "Products", new String[]{"PRODUCT_ID"}, new String[]{"PRODUCT_ID"}, Join.INNER_JOIN);
+            query1.addJoin(join);
+            Join join1 = new Join("OrderDetails", "LoginUser", new String[]{"USER_ID"}, new String[]{"USER_ID"}, Join.INNER_JOIN);
+            query1.addJoin(join1);
+			data1 = api.executeQuery(query1, con);
+			
+			while(data1.next())
+			{	
+				JSONObject jo1=new JSONObject();
+				jo1.put("order_id", data1.getInt("ORDER_ID"));
+				jo1.put("user_name", data1.getValue("USER_NAME"));
+				jo1.put("product_name", data1.getValue("PRODUCT_NAME"));
+				jo1.put("price",data1.getInt("PRICE"));
+				jo1.put("quantity",data1.getInt("QUANTITY"));
+				jo1.put("date", data1.getAsDate("ORDER_DATE").toString());
+				jo1.put("total", data1.getInt("PRICE")*data1.getInt("QUANTITY"));
+				ja1.add(jo1);
+			}
+			jo.put("details", ja1);
+			response.getWriter().print(jo);
+			}catch(Exception e) {
+				System.out.println(e);
+			}
 		}
 		else if(func.equals("getPrintProduct")) {
 			String product_id=request.getParameter("id");

@@ -4,6 +4,7 @@ function login() {
 	if (name == "" || password == "") {
 		alert("Enter all the credentials");
 	}
+	
 	else {
 		$.post("LoginAndRegister", {
             func:"doLogin",
@@ -82,4 +83,10 @@ function toLogin(){
 }
       jQuery(document).ready(function() {
 		$("#register").hide();
+		$.get("CheckSession", {
+	},function(data, status) {
+		if (data == "already_using") {
+			window.location.href = "welcome.jsp";
+		}
+	});
 	})

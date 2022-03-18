@@ -86,8 +86,24 @@ public class placeOrderAction extends HttpServlet {
 	        if(star_member==true) {
 	    			cashback=total*5/100;
 	        }
-
-			data1 = api.executeQuery(query, con);
+	        Row purchased_row=new Row("PurchasedDetails");
+			purchased_row.set("USER_ID",user_id);
+			Date now=new Date();
+ 			Calendar cal = Calendar.getInstance();
+ 			  cal.setTime(now);
+ 			 if(star_member==true) {
+ 			  cal.add(Calendar.MINUTE, 5); 
+ 			 }else {
+ 				cal.add(Calendar.MINUTE, 2);
+ 			 }
+ 		    now = cal.getTime();
+ 			Timestamp ts=new Timestamp(now.getTime()); 
+ 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
+ 			purchased_row.set("PURCHASED_DATE",formatter.format(ts));
+ 			DataObject db1=new WritableDataObject();
+ 			db1.addRow(purchased_row);
+        	DataAccess.add(db1);
+        	data1 = api.executeQuery(query, con);
 			while(data1.next()) {
 				
 				SelectQuery query3 = new SelectQueryImpl(new Table("Products"));
@@ -99,6 +115,8 @@ public class placeOrderAction extends HttpServlet {
 					admin_quantity=data2.getInt("QUANTITY")-data1.getInt("QUANTITY");
 				}
 				if(admin_quantity>0) {
+				
+	        	
 				Row row1=new Row("OrderDetails");
 	 			row1.set("USER_ID",data1.getInt("USER_ID"));
 	 			row1.set("PRODUCT_ID",data1.getInt("PRODUCT_ID"));
@@ -106,24 +124,25 @@ public class placeOrderAction extends HttpServlet {
 	 			row1.set("QUANTITY",data1.getInt("QUANTITY"));
 	 			row1.set("ADDRESS",address);
 	 		    
-	 			Date now=new Date();
-	 			Calendar cal = Calendar.getInstance();
-	 			  cal.setTime(now);
-	 			 if(star_member==true) {
-	 			  cal.add(Calendar.MINUTE, 5); 
-	 			 }else {
-	 				cal.add(Calendar.MINUTE, 2);
-	 			 }
-	 		    now = cal.getTime();
-	 			Timestamp ts=new Timestamp(now.getTime()); 
-	 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
+//	 			Date now=new Date();
+//	 			Calendar cal = Calendar.getInstance();
+//	 			  cal.setTime(now);
+//	 			 if(star_member==true) {
+//	 			  cal.add(Calendar.MINUTE, 5); 
+//	 			 }else {
+//	 				cal.add(Calendar.MINUTE, 2);
+//	 			 }
+//	 		    now = cal.getTime();
+//	 			Timestamp ts=new Timestamp(now.getTime()); 
+//	 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
 	                  
 	 			row1.set("ORDER_DATE",formatter.format(ts));
 	 			row1.set("RETURN_PRODUCT",false);
-	 			
+	 			row1.set("PURCHASE_ID", purchased_row.getLong("PURCHASE_ID"));
 	 			DataObject db=new WritableDataObject();
 	 			db.addRow(row1);
 	        	DataAccess.add(db);
+	        	
 	        	DataObject d =per.get("User_Cart",(Criteria)null);
 	        	Criteria c8 = new Criteria(new Column("User_Cart", "CART_ID"),data1.getInt("CART_ID"), QueryConstants.EQUAL);
 				d.deleteRows("User_Cart",c8); 

@@ -57,9 +57,11 @@ public class ReturnAction extends HttpServlet {
 		int quantity=0;
 		int product_id=0;
 		int product_quantity=0;
+		int price=0;
+		
 		 RelationalAPI api = RelationalAPI.getInstance();
  		 Connection con = null;
- 		 DataSet data = null;
+ 		 DataSet data,data1 = null;
 		
 		 DataObject dataobject=null;
  		 try {
@@ -71,9 +73,17 @@ public class ReturnAction extends HttpServlet {
 			query.setCriteria(c1);
 			data = api.executeQuery(query, con);
 			while(data.next()) {
+				price=data.getInt("PRICE");
 				quantity=data.getInt("QUANTITY");
 				product_id=data.getInt("PRODUCT_ID");
 			}
+			SelectQuery queryL = new SelectQueryImpl(new Table("LoginUser"));
+			queryL.addSelectColumn(Column.getColumn("LoginUser",  "WALLET"));
+			Criteria c5 = new Criteria(new Column("LoginUser", "USER_ID"),user_id, QueryConstants.EQUAL);
+			queryL.setCriteria(c5);
+			data1 = api.executeQuery(queryL, con);
+			data1.next();
+			price=price+data1.getInt("WALLET");
 			SelectQuery query1 = new SelectQueryImpl(new Table("Products"));
 			query1.addSelectColumn(Column.getColumn("Products",  "*"));
 			Criteria c3 = new Criteria(new Column("Products", "PRODUCT_ID"),product_id, QueryConstants.EQUAL); 
@@ -82,13 +92,16 @@ public class ReturnAction extends HttpServlet {
             Row row=dataobject.getFirstRow("Products");
             product_quantity=row.getInt("QUANTITY");
     		quantity=product_quantity+quantity;
-    		//update orderDetails and product
+    		
     		UpdateQuery s = new UpdateQueryImpl("Products");
-			//Criteria c4 = new Criteria(new Column("Products", "PRODUCT_ID"),product_id, QueryConstants.EQUAL); 
 			s.setCriteria(c3);
 			s.setUpdateColumn("QUANTITY",quantity);
 			per.update(s);
-			
+			UpdateQuery walletQuery = new UpdateQueryImpl("LoginUser");
+			 
+			walletQuery.setCriteria(c5);
+			walletQuery.setUpdateColumn("WALLET",price);
+			per.update(walletQuery);
 			UpdateQuery s1 = new UpdateQueryImpl("OrderDetails");
 			Criteria c4 = new Criteria(new Column("OrderDetails", "ORDER_ID"),order_id, QueryConstants.EQUAL); 
 			s1.setCriteria(c4);

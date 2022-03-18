@@ -41,6 +41,8 @@ public class starMemberAction extends HttpServlet {
 		DataSet data = null;
 		DataSet data1=null;
 		boolean star_member=false;
+		int wallet=0;
+		int total=0;
 		try {
 			con = mConnection.getAvailableConnection();	
 			Persistence per= (Persistence)BeanUtil.lookup("Persistence");
@@ -49,9 +51,15 @@ public class starMemberAction extends HttpServlet {
 			Criteria c1 = new Criteria(new Column("LoginUser", "USER_ID"),user_id, QueryConstants.EQUAL); 
 			query.setCriteria(c1);
 			data = api.executeQuery(query, con);
-			while(data.next()){
+			data.next();
 			   star_member=data.getAsBoolean("STAR_MEMBER");
-			}
+			   wallet=data.getInt("WALLET");
+			   if(wallet>499) {
+				   wallet=wallet-499;
+			   }else {
+				   total=499-wallet;
+				   wallet=0;
+			   }
 			if(star_member) {
 				response.sendRedirect("welcome.jsp?msg=0");
 			}
@@ -67,8 +75,9 @@ public class starMemberAction extends HttpServlet {
 	 			s1.setCriteria(c1);
 	 			s1.setUpdateColumn("STAR_MEMBER",true);
 	 			s1.setUpdateColumn("MEMBER_TIME",formatter.format(ts));
+	 			s1.setUpdateColumn("WALLET", wallet);
 	 			per.update(s1);
-				response.sendRedirect("welcome.jsp?msg=1");
+				response.sendRedirect("welcome.jsp?msg=1&total="+total);
 
 			}
 		}catch(Exception e) {

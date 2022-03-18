@@ -65,6 +65,9 @@ table td
 	padding:.625em;
 	text-align: center;
 }
+.table_head{
+	background-color:green;
+}
 .box-view
 {
 
@@ -168,4 +171,26 @@ button {
   25%  {background-color: ffcccb;}
   50%  {background-color: ffcccb;}
   100% {background-color: ffcccb;}
+}
+.fa-star {  
+        font-size : 15px;  
+        align-content: left;  
+        cursor:pointer;
+    }  
+.cursor{
+	cursor:pointer;
+}
+.right{
+	float:right;
+}
+.fa-close{
+	float:right; 
+	color:red; 
+	cursor:pointer;
+}
+.pstar_rating{
+	float:left;
+}
+.left{
+	float:left;
 }

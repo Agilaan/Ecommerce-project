@@ -26,7 +26,6 @@
          	<br><br>
             <a onclick="toLogin()" style="cursor:pointer;" text-decoration="none">Already have an account</a>
         </div>
-
 </body>
 
 

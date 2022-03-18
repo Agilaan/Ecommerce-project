@@ -49,6 +49,7 @@ public class incDecQuantity extends HttpServlet {
 		int cart_id=Integer.parseInt(request.getParameter("id"));
 		String quan=request.getParameter("quantity");
 		int quantity=0;
+		int price=0;
         RelationalAPI api = RelationalAPI.getInstance();
 	    Connection con = null;
 	    DataSet data=null;
@@ -57,11 +58,13 @@ public class incDecQuantity extends HttpServlet {
 			Persistence per= (Persistence)BeanUtil.lookup("Persistence");
 			SelectQuery query = new SelectQueryImpl(new Table("User_Cart"));
 			query.addSelectColumn(Column.getColumn("User_Cart",  "QUANTITY"));
+			query.addSelectColumn(Column.getColumn("User_Cart",  "PRICE"));
 			Criteria c1 = new Criteria(new Column("User_Cart", "CART_ID"),cart_id, QueryConstants.EQUAL); 
 			query.setCriteria(c1);
 			data = api.executeQuery(query, con);
 			data.next();
 			quantity=data.getInt("QUANTITY");
+			price=data.getInt("PRICE");
 			if(quan.equals("inc")) {
 				Criteria c = new Criteria(new Column("User_Cart", "CART_ID"),cart_id, QueryConstants.EQUAL);
 				DataObject d =per.get("User_Cart",c);
@@ -81,7 +84,12 @@ public class incDecQuantity extends HttpServlet {
 				per.update(d);
 			}
 			con.close();
-			response.sendRedirect("welcome.jsp?goToCart=1");
+			price=quantity*price;
+			JSONObject jo=new JSONObject();
+			jo.put("quantity", quantity);
+			jo.put("price", price);
+			response.getWriter().print(jo);
+		//	response.sendRedirect("welcome.jsp?goToCart=1");
 		 }catch(Exception e) {
 			 System.out.println(e);
 		 }

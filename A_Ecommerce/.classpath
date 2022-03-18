@@ -9,8 +9,8 @@
 			<attribute name="owner.project.facets" value="jst.web"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/agilaan-pt4859/eclipse-workspace/taskWebpage/A_Ecommerce/AdvMicroFramework.jar"/>
-	<classpathentry kind="lib" path="C:/Users/agilaan-pt4859/eclipse-workspace/taskWebpage/A_Ecommerce/AdvPersistence.jar"/>
 	<classpathentry kind="lib" path="C:/Users/agilaan-pt4859/Downloads/json-simple-1.1.1.jar"/>
+	<classpathentry kind="lib" path="D:/MickeyLite/MickeyLite/webapps/AdvMicroFramework.jar"/>
+	<classpathentry kind="lib" path="D:/MickeyLite/MickeyLite/webapps/AdvPersistence.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

@@ -14,7 +14,10 @@
 </head>
 <body>
 <div id="adminHeader_page">
-	<%String name=session.getAttribute("user_id").toString(); %>
+ 	<%if(session.getAttribute("user_id")==null){
+ 		response.sendRedirect("../login.jsp");
+ 	}else{
+ 		String name=session.getAttribute("user_id").toString(); } %>
 	<div class="dropdown">
 		<nav>
 			<ul>
@@ -37,7 +40,7 @@
 			        </ul>
 			    </li>
 			    <li><a class="logout" href="../logout.jsp">Logout</a></li>
-			    <li style="float:right"><a href="../welcome.jsp">Back To User</a>
+			  <%--  <li style="float:right"><a href="../welcome.jsp">Back To User</a> --%> 
 			</ul>
 		</nav>
 	</div>
@@ -141,7 +144,7 @@
 			</div>
 			<div class="">
 				<h3>Enter Price</h3>
-				<input type="text" id="P_price" name="price" required>
+				<input type="text" id="P_price" name="price"  required>
 				
 			</div>
 			<div class="">
@@ -151,18 +154,18 @@
 			</div>
 			<div class="">
 				<h3>Enter Quantity</h3>
-				<input type="text" id="P_quantity" name="quantity" required>
+				<input type="text" id="P_quantity" name="quantity"  required>
 				
 			</div>
 			
 			<div class="">
 				<h3>Enter Discount percent</h3>
-				<input type="text" id="P_discount" name="discount" >
+				<input type="text" id="P_discount" name="discount"  >
 				
 			</div>
 			<div class="">
 				<h3>Enter Cost Price</h3>
-				<input type="text" id="P_cp" name="cp" required>
+				<input type="text" id="P_cp" name="cp"  required>
 				
 			</div>
 					
@@ -181,14 +184,8 @@
 		<center><button type="submit" onclick="addNewCategory()">Save</button></center>
 
 </div>
-
-<div id="viewPurchased_page">
-<table>
-<thead>
-<tr>
-<th scope="col" style="background-color: green;">Total:<a id="purchased_total"></a></th>
-</tr>
-</thead>
+<div id="viewSelectedPurchaseHistory_page">
+<table id="table">
 <thead>
 <tr>   
     <th scope="col">User Name</th>
@@ -199,14 +196,37 @@
 	<th scope="col">Sub total</th>	
 </tr>
 </thead>
+<tbody id="selected_purchased_product_box1">
+<tr id="selected_purchased_product_box2"> 
+    <td id="selected_purchased_user"></td>
+	<td id="selected_purchased_product"></td>
+	<td id="selected_purchased_price"></td>
+	<td id="selected_purchased_quantity"></td>
+	<td id="selected_purchased_dop"></td>
+	<td id="selected_purchased_sub_total"> </td>	
+</tr>
+</tbody>
+</table>
+</div>
+
+<div id="viewPurchased_page">
+<table>
+<thead>
+<tr>   
+    <th scope="col">Purchased id</th>
+	<th scope="col">User Name</th>
+	<th scope="col">Date of purchase</th>
+	<th scope="col">Total Amount of purchase</th>
+	<th scope="col">View Details</th>	
+</tr>
+</thead>
 <tbody id="purchased_product_box1">
 <tr id="purchased_product_box2"> 
+    <td id="purchased_id"></td>
     <td id="purchased_user"></td>
-	<td id="purchased_product"></td>
-	<td id="purchased_price"></td>
-	<td id="purchased_quantity"></td>
 	<td id="purchased_dop"></td>
-	<td id="purchased_sub_total"> </td>	
+	<td id="purchased_total"></td>
+	<td id="purchased_sub_total"> <button id="viewDetails" onclick="viewDetails(this)">View details</button> </td>	
 </tr>
 </tbody>
 </table>
@@ -328,7 +348,10 @@ function EditPurticularProduct()
        		{
        		alert("Enter all the credentials");
        		}
-    	else
+       	else if(price<0 || discount<0 || quantity<0 || cp<0){
+	         alert("Enter valid credentials");
+            }
+    	else if(price>=0 || discount>=0 || quantity>=0  || cp>=0)
    		{
    		$.post("../AdminWelcomePage",{
    			func:"getProduct",
@@ -434,11 +457,12 @@ function displayCategory(){
 			}
 		});
 }
-function displayPurchasedProduct(){
+/*function displayPurchasedProduct(){
 	$.post("../AdminWelcomePage", {
 			func:"getPurchasedProduct"
 		}, function(data, status) {	
 			data = JSON.parse(data);
+			console.log(data);
 			$("#purchased_total").text(data.total);
 			for(var i=0;i<data.details.length;i++) {
 				var $row = jQuery("#purchased_product_box2").clone().attr('id',data.details[i].order_id);
@@ -452,6 +476,49 @@ function displayPurchasedProduct(){
 			}
 			$("#purchased_product_box2").css("visibility","hidden");
 		});
+}*/
+function displayPurchasedProduct(){
+	$.post("../AdminWelcomePage", {
+			func:"getPurchasedProduct"
+		}, function(data, status) {	
+			//data = JSON.parse(data);
+			console.log(data);
+			
+			for(var i=0;i<data.details.length;i++) {
+				var $row = jQuery("#purchased_product_box2").clone().attr('id',data.details[i].purchase_id);
+				$row.find("#purchased_id").text(data.details[i].purchase_id);
+				$row.find("#purchased_user").text(data.details[i].user_name);
+				$row.find("#purchased_dop").text(data.details[i].date);
+				$row.find("#purchased_total").text(data.details[i].total);
+				jQuery("#purchased_product_box1").append($row);
+			}
+			$("#purchased_product_box2").css("visibility","hidden");
+		});
+}
+function viewDetails(sender){
+	var id=sender.parentNode.parentNode.id;
+	
+	$.post("../AdminWelcomePage", {
+		func:"getPurticularPurchasedProduct",
+		id:id
+		}, function(data, status) {	
+			data=JSON.parse(data);
+			jQuery("#selected_purchased_product_box1").empty();
+			for(var i=0;i<data.details.length;i++) {
+				var $row = jQuery("<tr></tr>").attr('id',data.details[i].order_id);
+				$row.append(jQuery("<td id=selected_purchased_user></td>").text(data.details[i].user_name));
+				$row.append(jQuery("<td id=selected_purchased_product></td>").text(data.details[i].product_name)); 
+				$row.append(jQuery("<td id=selected_purchased_price></td>").text(data.details[i].price)); 
+				$row.append(jQuery("<td id=selected_purchased_quantity></td>").text(data.details[i].quantity)); 
+				$row.append(jQuery("<td id=selected_purchased_dop></td>").text(data.details[i].date)); 
+				$row.append(jQuery("<td id=selected_purchased_sub_total></td>").text(data.details[i].total)); 
+
+				jQuery("#selected_purchased_product_box1").append($row);
+			}
+			$("#selected_purchased_product_box2").css("visibility","hidden");
+			togetPurticularPurchasedProduct();
+		});
+	
 }
 function displayViewAndEditCategory(){
 	$.post("../AdminWelcomePage", {
@@ -577,6 +644,17 @@ function EditPurticularCategory()
    		}
        
  }
+function togetPurticularPurchasedProduct(){
+	$("#addNewCategory_page").hide();
+	$("#adminHome_page").hide();
+	$("#addNewProduct_page").hide();
+	$("#viewPurchased_page").hide();
+	$("#viewAndEditCategory_page").hide();
+	$("#viewAndEditProduct_page").hide();
+	$("#editProduct_page").hide();
+	$("#editCategory_page").hide();
+	$("#viewSelectedPurchaseHistory_page").show();
+}
 function toEditCategory(){
 	$("#addNewCategory_page").hide();
 	$("#adminHome_page").hide();
@@ -586,6 +664,7 @@ function toEditCategory(){
 	$("#viewAndEditProduct_page").hide();
 	$("#editProduct_page").hide();
 	$("#editCategory_page").show();
+	$("#viewSelectedPurchaseHistory_page").hide();
 	displayEditCategory();
  }
 function toEditProduct(){
@@ -597,6 +676,7 @@ function toEditProduct(){
 	$("#viewAndEditProduct_page").hide();
 	$("#editProduct_page").show();
 	$("#editCategory_page").hide();
+	$("#viewSelectedPurchaseHistory_page").hide();
 	displayEditProduct();
 }
 function toViewAndEditProduct(){
@@ -608,6 +688,7 @@ function toViewAndEditProduct(){
 	$("#viewAndEditProduct_page").show();
 	$("#editProduct_page").hide();
 	$("#editCategory_page").hide();
+	$("#viewSelectedPurchaseHistory_page").hide();
 	displayViewAndEditProduct();
 }
 function toViewAndEditCategory(){
@@ -619,6 +700,7 @@ function toViewAndEditCategory(){
 	$("#viewAndEditProduct_page").hide();
 	$("#editProduct_page").hide();
 	$("#editCategory_page").hide();
+	$("#viewSelectedPurchaseHistory_page").hide();
 	displayViewAndEditCategory();
 }
 function toViewPurchased(){
@@ -630,6 +712,7 @@ function toViewPurchased(){
 	$("#viewAndEditProduct_page").hide();
 	$("#editProduct_page").hide();
 	$("#editCategory_page").hide();
+	$("#viewSelectedPurchaseHistory_page").hide();
 	displayPurchasedProduct();
 }
 function toAddNewCategory(){
@@ -641,6 +724,7 @@ function toAddNewCategory(){
 	$("#viewAndEditProduct_page").hide();
 	$("#editProduct_page").hide();
 	$("#editCategory_page").hide();
+	$("#viewSelectedPurchaseHistory_page").hide();
 }
 function toAddNewProduct(){
 	$("#addNewCategory_page").hide();
@@ -651,6 +735,7 @@ function toAddNewProduct(){
 	$("#viewAndEditProduct_page").hide();
 	$("#editProduct_page").hide();
 	$("#editCategory_page").hide();
+	$("#viewSelectedPurchaseHistory_page").hide();
 	displayCategory();
 }
 function toAdminHome(){
@@ -662,8 +747,10 @@ function toAdminHome(){
 	$("#viewAndEditProduct_page").hide();
 	$("#editProduct_page").hide();
 	$("#editCategory_page").hide();
+	$("#viewSelectedPurchaseHistory_page").hide();
 }
 jQuery(document).ready(function() {
+	
 	AdminHomePageDetails();
 	$("#adminHeader_page").show();
 	$("#adminHome_page").show();
@@ -674,6 +761,7 @@ jQuery(document).ready(function() {
 	$("#viewAndEditProduct_page").hide();
 	$("#editProduct_page").hide();
 	$("#editCategory_page").hide();
+	$("#viewSelectedPurchaseHistory_page").hide();
 	})
 </script>
 </body>

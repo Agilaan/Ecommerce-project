@@ -37,6 +37,7 @@ public class LoginAndRegister extends HttpServlet {
 		if(func.equals("doLogin")) {
 			String name=request.getParameter("name");
 			String password=request.getParameter("password");
+			
 			PrintWriter out=response.getWriter();
 			RelationalAPI api = RelationalAPI.getInstance();
 			Connection con = null;
@@ -53,9 +54,14 @@ public class LoginAndRegister extends HttpServlet {
 				data = api.executeQuery(query, con);
 				while(data.next()) {
 					int id=data.getInt("USER_ID");
+					if(name.equals("admin") && password.equals("admin")){
+						HttpSession session=request.getSession();   
+						session.setAttribute("user_id", id);
+						out.write("admin");
+					}else {
 					HttpSession session=request.getSession();   
 					session.setAttribute("user_id", id);
-					out.write("success");
+					out.write("success");}
 				}	
 				con.close();
 				}

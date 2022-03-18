@@ -10,27 +10,21 @@
 <link rel = "stylesheet" href = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">  
 <link href="style.css" rel="stylesheet" type="text/css"/>
 </head>
-<style>  
-    .fa-star {  
-        font-size : 15px;  
-        align-content: left;  
-    }  
-   
-    </style> 
+
 <body>
 <center><h1>Ecommerce Website</h1></center>
 <div id="header_page">
 	<div class="bgimage">
 		<div class="topnav">
 		        
-			    <a id="user" style="cursor:pointer;" onclick="toStarMember()"></a>
-				<a id="home" style="cursor:pointer;" onclick="toHome()">Home</a>
-				<a id="cart" style="cursor:pointer;" onclick="toCart()">My cart</a>
-				<a id="history" style="cursor:pointer;" onclick="toPurchaseHistory()">Purchase History</a>
-				<a id="logout" style="cursor:pointer;" href="logout.jsp">Logout</a>
-			    <a style="float:right" id="admin_page" style="cursor:pointer;" href="admin\AdminWelcome.jsp">Admin Page</a>
-			    <a style="float:right" id="user_info_page" onclick="toUserInfo()" style="cursor:pointer;">User Details</a>
-			    <i style="float:right; color:red">WALLET MONEY: <i id="wallet_money"></i> </i>
+			    <a id="user" class="cursor" onclick="toStarMember()"></a>
+				<a id="home" class="cursor" onclick="toHome()">Home</a>
+				<a id="cart" class="cursor" onclick="toCart()">My cart</a>
+				<a id="history" class="cursor" onclick="toPurchaseHistory()">Purchase History</a>
+				<a id="logout" class="cursor" href="logout.jsp">Logout</a>
+			    <a  id="admin_page"  href="admin\AdminWelcome.jsp">Admin Page</a>
+			    <a id="user_info_page" onclick="toUserInfo()" >User Details</a>
+			    <i class="right" >WALLET MONEY: <i id="wallet_money"></i> </i>
 				<br><br><br>
 		</div>
 	</div>
@@ -51,10 +45,10 @@
 	<div id ="dummy_box_index" class="box-view">
 	<div>
 			<div class="inside">
-				<a class="image"> <img id ="img" src="" style="cursor:pointer;" onclick="description(this.id)"></a>
+				<a class="image"> <img id ="img" src="" class="cursor" onclick="description(this.id)"></a>
 			    
 			    <a><a id="pname"></a></a>
-				<p><strike><a id="price"></a></strike><a>  </a><a id="dis_price"></a>$</p>
+				<p><strike><a id="price"></a></strike><a>  </a><a id="dis_price"></a><a> </a><i class = "fa fa-inr"></i> </p>
 				<form action="CartHandling" method="POST">
 					<p>
 						<input type="number" id="quantity" name="quantity"  value="1" placeholder="1" min="1" max="10" />
@@ -65,7 +59,7 @@
 					<button type="submit" onclick="">Add to cart</button>
 				</form>
 			<br>
-	        <div style="float:left;" class = "pstar_rating" id="pstar_rating">
+	        <div  class = "pstar_rating" id="pstar_rating">
 					       <i class = "fa fa-star"  aria-hidden = "true" id = "pstar1"></i>  
 					       <i class = "fa fa-star"  aria-hidden = "true" id = "pstar2"></i>  
 					       <i class = "fa fa-star"  aria-hidden = "true" id = "pstar3"></i>  
@@ -80,8 +74,8 @@
 		</div>
 		<div id="myModal" >
 	        <div id="modal-content" class="modal-content">
-	      <a>  <img id ="purticular_img" style="float:left;" src=""> </a> <br><br>
-	           <a style="float:right; color:red; cursor:pointer;"  class="fa fa-close" onclick="close_box()"></a>
+	      <a>  <img id ="purticular_img" class="left" src=""> </a> <br><br>
+	           <a  class="fa fa-close" onclick="close_box()"></a>
 	     <center>      <h3>PRODUCT DESCRIPTION</h3>
 	                  <b>Product Name:  </b><a id="ppname"></a><br>
 	                  <b>Category:  </b><a id="pptype"></a><br>
@@ -111,11 +105,11 @@
 			       
 			       <div class = "con" id="st">  
 			           <h4>Give your rating for the product and add your comment</h4>  
-				       <i class = "fa fa-star" style="cursor:pointer;" aria-hidden = "true" id = "st1"></i>  
-				       <i class = "fa fa-star" style="cursor:pointer;" aria-hidden = "true" id = "st2"></i>  
-				       <i class = "fa fa-star" style="cursor:pointer;" aria-hidden = "true" id = "st3"></i>  
-				       <i class = "fa fa-star" style="cursor:pointer;" aria-hidden = "true" id = "st4"></i>  
-				       <i class = "fa fa-star" style="cursor:pointer;" aria-hidden = "true" id = "st5"></i>  
+				       <i class = "fa fa-star"  aria-hidden = "true" id = "st1"></i>  
+				       <i class = "fa fa-star"  aria-hidden = "true" id = "st2"></i>  
+				       <i class = "fa fa-star"  aria-hidden = "true" id = "st3"></i>  
+				       <i class = "fa fa-star"  aria-hidden = "true" id = "st4"></i>  
+				       <i class = "fa fa-star"  aria-hidden = "true" id = "st5"></i>  
 			       </div>  
     		  </div>
     		  <form action="reviewProduct" method="post" id="review_form">
@@ -133,8 +127,8 @@
 	<table>
 	<thead>
 	<tr>
-	<th scope="col" style="background-color: green;">Total:<a id="final_total"></a></th>
-	<th scope="col"><a style="cursor:pointer;" onclick="toPlaceOrder()">Place order</a></th>
+	<th scope="col" class="table_head" >Total:<a id="final_total"></a></th>
+	<th scope="col"><a class="cursor" onclick="toPlaceOrder()">Place order</a></th>
 	</tr>
 	</thead>
 	
@@ -154,7 +148,7 @@
 	    <td><a id="sno"></a></td>
 		<td id="pname"></td>
 		<td id="price"></td>
-		<td > <a id="inc" href="" style="text-decoration:none;"> + </a> <a id="quantity"></a>  <a id="dec" href="" style="text-decoration:none;"> - </a></td>
+		<td > <a id="inc" onclick="inc_dec_quantity(this)"  style="text-decoration:none;"> + </a> <a id="change_quantity"></a>  <a id="dec" onclick="inc_dec_quantity(this)" style="text-decoration:none;"> - </a></td>
 		<td id="total"></td>
 	<%-- 	<td id="remove"> <a id="removetag" href="">Remove</a></td> --%>
 	    <td> <form id="removetag" action="CartHandling" method="post"><input type="hidden" name="id" id="id"/><button type="submit">Remove</button> </form> </td>
@@ -168,7 +162,7 @@
 	<table>
 	<thead>
 	<tr>
-	<th scope="col" style="background-color: green;">Total:<a id="final_total_placeOrder"></a></th>
+	<th scope="col" class="table_head" >Total:<a id="final_total_placeOrder"></a></th>
 	
 	</tr>
 	</thead>
@@ -221,7 +215,7 @@
 	<table>
 	<thead>
 	<tr>
-	<th scope="col" style="background-color: green;">Total:<a id="total_purchaseHistory"></a></th>
+	<th scope="col" class="table_head" >Total:<a id="total_purchaseHistory"></a></th>
 	</tr>
 	</thead>
 	<thead>
@@ -275,6 +269,7 @@
 	  <li>You would get a discount in all electronics product of 5%-10%</li>
 	  <li>Return time will be extended to 5 Minutes</li>
 	  <li>If your purchase is more than 2000 then you would a cashback of 5% of your total Purchase</li>
+	  <li>It costs just 499 only</li>
 	</ul>
 	
 	<form action="starMemberAction" method="post">
@@ -300,7 +295,7 @@
               <button type="submit">Submit</button>
       </form>
 </div>
-<div id="non_admin_user_page">
+<%-- <div id="non_admin_user_page">
 <table>
 	<thead>
 	<tr>
@@ -315,7 +310,7 @@
    	    <td> <form id="makeAdmin" action="MakeAdmin" method="post"><input type="hidden" name="user_id" id="user_id"/><button type="submit">Make Admin</button> </form> </td>
 	</tbody>
 	</table>
-</div>
+</div> --%>
 <script>
 var product_data;
 var search_data;
@@ -347,7 +342,7 @@ function getUser(){
 		$("#admin_page").hide();
 		$("#user_info_page").hide();
 		$("#wallet_money").text(data.wallet);
-		if(data.is_admin==1){
+		if(data.is_admin){
 			$("#admin_page").show();
 			$("#user_info_page").show();
 		}
@@ -585,19 +580,35 @@ $("#clear_search").click(function(event){
 					$row.find("#sno").text(i+1);
 					$row.find("#pname").text(data[i].product_name);
 					$row.find("#price").text(data[i].price);
-					$row.find("#quantity").text(data[i].quantity);
+					$row.find("#change_quantity").text(data[i].quantity);
 					//$row.find("#product_id").val(data[i].product_id);
 					$row.find("#total").text(data[i].quantity*data[i].price);
 					$("#final_total").text(data[i].total);
 					
 					$row.find("#id").val(data[i].cart_id);
-					$row.find("#inc").attr("href","incDecQuantity?id="+data[i].cart_id+"&quantity=inc");
-					$row.find("#dec").attr("href","incDecQuantity?id="+data[i].cart_id+"&quantity=dec");
+				//	$row.find("#inc").attr("href","incDecQuantity?id="+data[i].cart_id+"&quantity=inc");
+				//	$row.find("#dec").attr("href","incDecQuantity?id="+data[i].cart_id+"&quantity=dec");
 					jQuery("#Product_List_cart").append($row);
 				}
 				$("#dummy_box_cart").css('visibility','hidden');
 			});
 	}
+	function inc_dec_quantity(sender){
+		var quantity=sender.id;
+		var id=sender.parentNode.parentNode.id;
+		var row=jQuery("#"+id);
+		$.post("incDecQuantity", {
+			quantity:quantity,
+			id:id
+			}, function(data, status) {	
+				console.log(data);
+				data=JSON.parse(data);
+				row.find("#change_quantity").text(data.quantity);
+				row.find("#total").text(data.price);
+			});
+		
+	}
+	
 	function displayPlaceOrder(){
 		$.post("UserWelcomeServlet", {
 			func:"getDisplayCart"
@@ -792,6 +803,12 @@ function toUserInfo(){
 	getAllUser();
 }
 jQuery(document).ready(function() {
+	$.get("CheckSession", {
+	},function(data, status) {
+		if (data == "failed") {
+			window.location.href = "login.jsp";
+		}
+	});
 	getUser();
 	$("#header_page").show();
 	$("#home_page").show();

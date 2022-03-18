@@ -94,9 +94,9 @@ public class UserWelcomeServlet extends HttpServlet {
 		        json.put("star_member", star_member);
 		        json.put("wallet", row.getInt("WALLET"));
 		        if(row.getBoolean("IS_ADMIN")) {
-		        	json.put("is_admin", 1);
+		        	json.put("is_admin", true);
 		        }else{
-		        	json.put("is_admin", 0);
+		        	json.put("is_admin", false);
 		        }
 		        out.print(json.toString());
 		        con.close();
@@ -148,11 +148,12 @@ public class UserWelcomeServlet extends HttpServlet {
 				data2 = api.executeQuery(query2, con);
 				while(data2.next()) {
 					JSONObject jo=new JSONObject();
-					if(data2.getAsBoolean("VERIFIED")) {
-						jo.put("verified", true);
-					}else {
-						jo.put("verified", false);
-					}
+//					if(data2.getAsBoolean("VERIFIED")) {
+//						jo.put("verified", true);
+//					}else {
+//						jo.put("verified", false);
+//					}
+					jo.put("verified", data2.getAsBoolean("VERIFIED"));
 					jo.put("rID", data2.getInt("REVIEW_ID"));		
 					jo.put("comment", data2.getString("COMMENT"));
 					jo.put("rate", data2.getInt("RATING"));
@@ -342,8 +343,11 @@ public class UserWelcomeServlet extends HttpServlet {
 				SelectQuery query1 = new SelectQueryImpl(new Table("OrderDetails"));
 				query1.addSelectColumn(Column.getColumn("OrderDetails",  "*"));
 				query1.addSelectColumn(Column.getColumn("Products",  "PRODUCT_NAME"));
+				query1.addSelectColumn(Column.getColumn("PurchasedDetails",  "PURCHASED_DATE"));
 				Join join = new Join("OrderDetails", "Products", new String[]{"PRODUCT_ID"}, new String[]{"PRODUCT_ID"}, Join.INNER_JOIN);
 	            query1.addJoin(join);
+	            Join join1=new Join("OrderDetails","PurchasedDetails",new String[]{"PURCHASE_ID"}, new String[]{"PURCHASE_ID"}, Join.INNER_JOIN);
+	            query1.addJoin(join1);
 				Criteria c2 = new Criteria(new Column("OrderDetails", "USER_ID"),user_id, QueryConstants.EQUAL); 
 				query1.setCriteria(c2);
 				data1 = api.executeQuery(query1, con);
@@ -358,7 +362,7 @@ public class UserWelcomeServlet extends HttpServlet {
 					jo1.put("star_member", star_member);
 					Date now=new Date();
 					Timestamp ts=new Timestamp(now.getTime());
-					Timestamp now1=data1.getAsTimestamp("ORDER_DATE");
+					Timestamp now1=data1.getAsTimestamp("PURCHASED_DATE");
 					//Timestamp ts1=new Timestamp(now1.getTime());
 					if(now1.compareTo(ts)>0){
 						jo1.put("is_returnable", 1);

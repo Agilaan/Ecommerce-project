@@ -6,7 +6,7 @@ function addProduct()
 		{
 		 product_id=$("#P_id").val();
 		}
-      
+        
        	var category=$("#P_category").val();
        	var price=$("#P_price").val();
        	var image=$("#P_image").val();
@@ -18,7 +18,10 @@ function addProduct()
        		{
        		alert("Enter all the credentials");
        		}
-    	else
+       		else if(price<0 || discount<0 || quantity<0 || cp<0){
+	         alert("Enter valid credentials");
+             }
+    	else if(price>=0 || discount>=0 || quantity>=0  || cp>=0)
    		{
    		$.post("../AdminWelcomePage",{
    		    func:"getProduct",
